@@ -1,28 +1,24 @@
 const app = require("./app");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const dbConnection = require("./utils/db");
 
+// Load environment variables
 dotenv.config();
 
 // PORT
 const PORT = process.env.PORT || 8000;
 
-// DB
-const DB = process.env.DB;
-
-// Connect to MongoDB
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("Database connected successfully");
-    // Start the server after successful DB connection
+// Connect to MongoDB and start the server
+const startServer = async () => {
+  try {
+    await dbConnection(); // Ensure DB connection is established
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
-      // Call dbConnection for additional setup logic
-      dbConnection();
     });
-  })
-  .catch((err) => {
+  } catch (err) {
     console.log("Database connection failed:", err);
-  });
+  }
+};
+
+startServer(); // Call the function to start the server
